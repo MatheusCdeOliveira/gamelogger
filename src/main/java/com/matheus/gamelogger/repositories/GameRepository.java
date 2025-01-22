@@ -4,6 +4,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.matheus.gamelogger.entities.Game;
 
-public interface GameRepository extends JpaRepository<Game, Long> {
-	
-}
+public interface GameRepository extends JpaRepository<Game, Long> {}

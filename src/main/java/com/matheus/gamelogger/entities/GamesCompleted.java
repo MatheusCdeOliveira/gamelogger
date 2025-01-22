@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "tb_games_completed")
@@ -17,22 +18,22 @@ public class GamesCompleted {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String name;
 	
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
+	@NotNull(message = "O usuário é obrigatório")
 	private User user;
 	
 	@ManyToOne
 	@JoinColumn(name = "game_id", nullable = false)
+	@NotNull(message = "O jogo é obrigatório")
 	private Game game;
 	
 	public GamesCompleted() {
 	}
 
-	public GamesCompleted(Long id, String name, User user, Game game) {
+	public GamesCompleted(Long id, User user, Game game) {
 		this.id = id;
-		this.name = name;
 		this.user = user;
 		this.game = game;
 	}
@@ -45,12 +46,20 @@ public class GamesCompleted {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public User getUser() {
+		return user;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Game getGame() {
+		return game;
+	}
+
+	public void setGame(Game game) {
+		this.game = game;
 	}
 
 	@Override
