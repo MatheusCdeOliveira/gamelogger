@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.matheus.gamelogger.dto.GameMinDTO;
-import com.matheus.gamelogger.entities.Game;
+
 import com.matheus.gamelogger.services.GameService;
 
 @RestController

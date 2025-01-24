@@ -2,6 +2,8 @@ package com.matheus.gamelogger.entities;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,13 +22,15 @@ public class GamesCompleted {
 	private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name = "user_id", nullable = false)
 	@NotNull(message = "O usuário é obrigatório")
+	@JoinColumn(name = "user_id", nullable = false)
+	@JsonBackReference
 	private User user;
 	
 	@ManyToOne
-	@JoinColumn(name = "game_id", nullable = false)
 	@NotNull(message = "O jogo é obrigatório")
+	@JoinColumn(name = "game_id", nullable = false)
+	@JsonBackReference
 	private Game game;
 	
 	public GamesCompleted() {

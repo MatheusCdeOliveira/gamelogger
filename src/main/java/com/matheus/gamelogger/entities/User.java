@@ -1,13 +1,16 @@
 package com.matheus.gamelogger.entities;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -35,11 +38,13 @@ public class User {
     @Column(nullable = false)
 	private String password;
 	
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<GamesCompleted> gamesCompleted = new HashSet<>();
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@JsonManagedReference
+	private List<GamesCompleted> gamesCompleted = new ArrayList<>();
 	
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<GamesBacklogged> gamesBacklogged = new HashSet<>();
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@JsonManagedReference
+	private List<GamesBacklogged> gamesBacklogged = new ArrayList<>();
 	
 	public User() {
 	}
@@ -72,6 +77,39 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public List<GamesCompleted> getGamesCompleted() {
+		return gamesCompleted;
+	}
+
+	public void setGamesCompleted(List<GamesCompleted> gamesCompleted) {
+		this.gamesCompleted = gamesCompleted;
+	}
+
+	public List<GamesBacklogged> getGamesBacklogged() {
+		return gamesBacklogged;
+	}
+
+	public void setGamesBacklogged(List<GamesBacklogged> gamesBacklogged) {
+		this.gamesBacklogged = gamesBacklogged;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		return Objects.equals(id, other.id);
 	}
 	
 	

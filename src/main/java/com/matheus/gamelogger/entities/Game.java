@@ -1,21 +1,31 @@
 package com.matheus.gamelogger.entities;
 
+import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_game")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Game {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
+	@JsonProperty("title")
 	private String title;
 	
 	@Column(name = "release_year")
@@ -28,6 +38,10 @@ public class Game {
 	
 	@Column(columnDefinition = "TEXT")
 	private String longDescription;
+	
+	@OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonManagedReference
+    private List<GamesCompleted> gamesCompleted;
 	
 	public Game() {
 	}
