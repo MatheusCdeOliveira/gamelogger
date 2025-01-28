@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.matheus.gamelogger.dto.UserRegisterDTO;
 import com.matheus.gamelogger.dto.UserWithGamesDTO;
 import com.matheus.gamelogger.dto.UserWithoutGamesDTO;
 import com.matheus.gamelogger.dto.UsersDTO;
@@ -19,6 +21,9 @@ public class UserService {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 	
 	@Transactional
 	public List<UsersDTO> findAll() {
@@ -44,5 +49,16 @@ public class UserService {
 	public UserWithGamesDTO findUserWithGames(Long id) {
 		User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 		return new UserWithGamesDTO(user);
+	}
+	
+	public User registerUser(UserRegisterDTO userRegisterDTO) {
+		if (userRepository.existsByEmail(userRegisterDTO.getEmail())) {
+			throw new RuntimeException("Email já cadastrado!");
+		}
+		User user = new User();
+		user.setEmail(userRegisterDTO.getEmail());
+		user.setPassword(passwordEncoder.encode(userRegisterDTO.getPassword()));
+		
+		return userRepository.save(user);
 	}
 }

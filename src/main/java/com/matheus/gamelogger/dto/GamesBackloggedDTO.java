@@ -6,11 +6,13 @@ public class GamesBackloggedDTO {
 	  private Long id;
 	  private String title;
 	  private String platforms;
+	  private String imgUrl;
 
 	  public GamesBackloggedDTO(GamesBacklogged gamesBacklogged) {
 	      this.id = gamesBacklogged.getGame().getId();
 	      this.title = gamesBacklogged.getGame().getTitle();
 	      this.platforms = gamesBacklogged.getGame().getPlatforms();
+	      this.imgUrl = gamesBacklogged.getGame().getImgUrl();
 	  }
 
 	public Long getId() {
@@ -36,7 +38,12 @@ public class GamesBackloggedDTO {
 	public void setPlatforms(String platforms) {
 		this.platforms = platforms;
 	}
-	
-	
-	  
+
+	public String getImgUrl() {
+		return imgUrl;
+	}
+
+	public void setImgUrl(String imgUrl) {
+		this.imgUrl = imgUrl;
+	} 
 }

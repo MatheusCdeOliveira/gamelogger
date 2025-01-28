@@ -6,20 +6,28 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.matheus.gamelogger.dto.GamesBackloggedDTO;
 import com.matheus.gamelogger.dto.GamesCompletedDTO;
+import com.matheus.gamelogger.dto.UserRegisterDTO;
 import com.matheus.gamelogger.dto.UserWithGamesDTO;
 import com.matheus.gamelogger.dto.UserWithoutGamesDTO;
 import com.matheus.gamelogger.dto.UsersDTO;
+import com.matheus.gamelogger.entities.User;
 import com.matheus.gamelogger.services.GamesBackloggedService;
 import com.matheus.gamelogger.services.GamesCompletedService;
 import com.matheus.gamelogger.services.UserService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
@@ -81,5 +89,24 @@ public class UserController {
 		} catch (RuntimeException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
 		}
+	}
+	
+	@PostMapping("/register")
+	public ResponseEntity<String> registerUser(@Valid @RequestBody UserRegisterDTO userRegisterDTO, BindingResult result) {
+		 if (result.hasErrors()) {
+		        StringBuilder errorMessages = new StringBuilder();
+		        for (ObjectError error : result.getAllErrors()) {
+		            errorMessages.append(error.getDefaultMessage()).append("\n");
+		        }
+		        return ResponseEntity.badRequest().body("Erro de validação: \n" + errorMessages.toString());
+		    }
+
+		try {
+			User newUser = userService.registerUser(userRegisterDTO);
+			return ResponseEntity.status(HttpStatus.CREATED).body("Usuário cadastrado com sucesso! ID: " + newUser.getId());
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body("Erro ao cadastrar usuário: " + e.getMessage());
+		}
+		
 	}
 }
