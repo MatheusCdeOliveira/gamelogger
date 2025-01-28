@@ -5,29 +5,34 @@ import java.util.stream.Collectors;
 
 import com.matheus.gamelogger.entities.User;
 
-public class UserWithGamesDTO {
+public class UsersDTO {
 	
 	private Long id;
 	private String email;
 	private List<GamesCompletedDTO> gamesCompleted;
 	private List<GamesBackloggedDTO> gamesBacklogged;
 	
-	public UserWithGamesDTO() {
+	public UsersDTO() {
 	}
-	
-	public UserWithGamesDTO(User user) {
+
+	public UsersDTO(User user) {
 		this.id = user.getId();
 		this.email = user.getEmail();
-	    this.gamesCompleted = user.getGamesCompleted().stream()
-	             .map(GamesCompletedDTO::new)
+		this.gamesCompleted = user.getGamesCompleted().stream()
+				 .map(GamesCompletedDTO::new)
 	             .collect(Collectors.toList());
-	    this.gamesBacklogged = user.getGamesBacklogged().stream()
-	             .map(GamesBackloggedDTO::new)
+		this.gamesBacklogged = user.getGamesBacklogged().stream()
+				 .map(GamesBackloggedDTO::new)
 	             .collect(Collectors.toList());
+
 	}
 
 	public Long getId() {
 		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getEmail() {

@@ -1,5 +1,6 @@
 package com.matheus.gamelogger.entities;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -33,6 +34,10 @@ public class GamesCompleted {
 	@JsonBackReference
 	private Game game;
 	
+	private LocalDate completionDate;
+	
+	private Double userRating;
+	
 	public GamesCompleted() {
 	}
 
@@ -64,6 +69,22 @@ public class GamesCompleted {
 
 	public void setGame(Game game) {
 		this.game = game;
+	}
+
+	public LocalDate getCompletionDate() {
+		return completionDate;
+	}
+
+	public void setCompletionDate(LocalDate completionDate) {
+		this.completionDate = completionDate;
+	}
+
+	public Double getUserRating() {
+		return userRating;
+	}
+
+	public void setUserRating(Double userRating) {
+		this.userRating = userRating;
 	}
 
 	@Override

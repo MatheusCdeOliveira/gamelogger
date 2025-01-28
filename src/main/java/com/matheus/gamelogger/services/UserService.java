@@ -1,12 +1,14 @@
 package com.matheus.gamelogger.services;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.matheus.gamelogger.dto.UserWithGamesDTO;
 import com.matheus.gamelogger.dto.UserWithoutGamesDTO;
+import com.matheus.gamelogger.dto.UsersDTO;
 import com.matheus.gamelogger.entities.User;
 import com.matheus.gamelogger.repositories.UserRepository;
 
@@ -19,12 +21,12 @@ public class UserService {
 	private UserRepository userRepository;
 	
 	@Transactional
-	public List<User> findAll() {
+	public List<UsersDTO> findAll() {
 		List<User> users = userRepository.findAll();
 		if (users.isEmpty()) {
 			throw new RuntimeException("Nenhum usuário encontrado");
 		}
-		return users;
+		return users.stream().map(user -> new UsersDTO(user)).collect(Collectors.toList());
 	}
 	
 	@Transactional

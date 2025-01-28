@@ -16,7 +16,7 @@ import com.matheus.gamelogger.dto.GamesBackloggedDTO;
 import com.matheus.gamelogger.dto.GamesCompletedDTO;
 import com.matheus.gamelogger.dto.UserWithGamesDTO;
 import com.matheus.gamelogger.dto.UserWithoutGamesDTO;
-import com.matheus.gamelogger.entities.User;
+import com.matheus.gamelogger.dto.UsersDTO;
 import com.matheus.gamelogger.services.GamesBackloggedService;
 import com.matheus.gamelogger.services.GamesCompletedService;
 import com.matheus.gamelogger.services.UserService;
@@ -35,8 +35,16 @@ public class UserController {
 	private GamesBackloggedService gamesBackloggedService;
 	
 	@GetMapping
-	public List<User> findAll() {
-		return userService.findAll();
+	public ResponseEntity<?> findAll() {
+		try {
+			List<UsersDTO> users = userService.findAll();
+			if (users.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum Usuário Encontrado");
+			}
+			return ResponseEntity.ok(users);
+		} catch (RuntimeException e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno ao buscar usuários");
+		}
 	}
 	
 	@GetMapping("/{id}")
