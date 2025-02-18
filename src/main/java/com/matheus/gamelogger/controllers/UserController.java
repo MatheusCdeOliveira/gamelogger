@@ -6,8 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,45 +30,34 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-	
+
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private GamesCompletedService gamesCompletedService;
-	
+
 	@Autowired
 	private GamesBackloggedService gamesBackloggedService;
-	
+
 	@GetMapping
-	public ResponseEntity<?> findAll() {
-		try {
-			List<UsersDTO> users = userService.findAll();
-			if (users.isEmpty()) {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum Usuário Encontrado");
-			}
-			return ResponseEntity.ok(users);
-		} catch (RuntimeException e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno ao buscar usuários");
-		}
+	public ResponseEntity<Object> findAll() {
+		List<UsersDTO> users = userService.findAll();
+		return ResponseEntity.ok(users);
 	}
-	
+
 	@GetMapping("/{id}")
-	public ResponseEntity<?> findById(@PathVariable Long id, @RequestParam(defaultValue = "false") boolean withGames) {
-		try {
-			if (withGames) {
-				UserWithGamesDTO user = userService.findUserWithGames(id);
-				return ResponseEntity.ok(user);
-			} else {
-				UserWithoutGamesDTO user = userService.findUserWithoutGames(id);
-				return ResponseEntity.ok(user);
-			}
-		}
-		 catch (RuntimeException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado com ID " + id);
+	public ResponseEntity<Object> findById(@PathVariable Long id,
+			@RequestParam(defaultValue = "false") boolean withGames) {
+		if (withGames) {
+			UserWithGamesDTO user = userService.findUserWithGames(id);
+			return ResponseEntity.ok(user);
+		} else {
+			UserWithoutGamesDTO user = userService.findUserWithoutGames(id);
+			return ResponseEntity.ok(user);
 		}
 	}
-	
+
 	@GetMapping("/{userId}/completed-games")
 	public ResponseEntity<List<GamesCompletedDTO>> getCompletedGamesByUser(@PathVariable Long userId) {
 		try {
@@ -80,7 +67,7 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
 		}
 	}
-	
+
 	@GetMapping("/{userId}/backlogged-games")
 	public ResponseEntity<List<GamesBackloggedDTO>> getBackloggedGamesByUser(@PathVariable Long userId) {
 		try {
@@ -90,23 +77,11 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
 		}
 	}
-	
-	@PostMapping("/register")
-	public ResponseEntity<String> registerUser(@Valid @RequestBody UserRegisterDTO userRegisterDTO, BindingResult result) {
-		 if (result.hasErrors()) {
-		        StringBuilder errorMessages = new StringBuilder();
-		        for (ObjectError error : result.getAllErrors()) {
-		            errorMessages.append(error.getDefaultMessage()).append("\n");
-		        }
-		        return ResponseEntity.badRequest().body("Erro de validação: \n" + errorMessages.toString());
-		    }
 
-		try {
-			User newUser = userService.registerUser(userRegisterDTO);
-			return ResponseEntity.status(HttpStatus.CREATED).body("Usuário cadastrado com sucesso! ID: " + newUser.getId());
-		} catch (Exception e) {
-			return ResponseEntity.badRequest().body("Erro ao cadastrar usuário: " + e.getMessage());
-		}
-		
+	@PostMapping("/register")
+	public ResponseEntity<Object> registerUser(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
+		User newUser = userService.registerUser(userRegisterDTO);
+		return ResponseEntity.status(HttpStatus.CREATED).body("Usuário cadastrado com sucesso! ID: " + newUser.getId());
+
 	}
 }
